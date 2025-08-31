@@ -25,14 +25,20 @@ export interface AnalysisState {
 }
 
 // Helper to generate a fake SHA-256 hash for demonstration
-const generateFakeSha256 = () => {
-  const chars = '0123456789ABCDEF';
+// This needs to be deterministic on the server, so no Math.random() here.
+const generateFakeSha256 = (seed: string) => {
   let hash = '';
+  const chars = '0123456789ABCDEF';
+  // Simple pseudo-random generator based on a seed string (filename).
+  // This is not cryptographically secure, just for creating a consistent fake hash.
   for (let i = 0; i < 64; i++) {
-    hash += chars.charAt(Math.floor(Math.random() * chars.length));
+    const charCode = seed.charCodeAt(i % seed.length) || 65;
+    const index = (charCode + i) % chars.length;
+    hash += chars.charAt(index);
   }
   return hash.match(/.{1,2}/g)!.join(':');
 };
+
 
 export async function handleApkAnalysis(
   prevState: AnalysisState,
@@ -55,8 +61,9 @@ export async function handleApkAnalysis(
     // --- Demo Logic ---
     // In a real app, this is where you'd extract the signature from the APK file.
     // For this demo, we'll simulate the process based on the filename.
-    // We'll pick a random genuine app for comparison.
-    const randomGenuineApp: GenuineApp = genuineApps[Math.floor(Math.random() * genuineApps.length)];
+    // We'll pick a genuine app for comparison based on the file name length to be deterministic.
+    const appIndex = file.name.length % genuineApps.length;
+    const randomGenuineApp: GenuineApp = genuineApps[appIndex];
     let foundSignature = '';
     let status: 'genuine' | 'fake';
     
@@ -66,10 +73,12 @@ export async function handleApkAnalysis(
       foundSignature = randomGenuineApp.signing_sha256;
     } else {
       status = 'fake';
-      // Ensure the fake signature is different from the expected one
-      do {
-        foundSignature = generateFakeSha256();
-      } while (foundSignature === randomGenuineApp.signing_sha256);
+      // Generate a consistent fake signature based on the filename
+      foundSignature = generateFakeSha256(file.name);
+      // Ensure the fake signature is different from the expected one in the unlikely event of a collision
+      if (foundSignature === randomGenuineApp.signing_sha256) {
+        foundSignature = generateFakeSha256(file.name + '_alt');
+      }
     }
     // --- End Demo Logic ---
 
@@ -98,3 +107,4 @@ export async function handleApkAnalysis(
     };
   }
 }
+
