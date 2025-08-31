@@ -13,8 +13,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ScanLine, Upload } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useRef, useActionState } from 'react';
+import { useFormStatus } from "react-dom";
 import { AnalysisResult } from './analysis-result';
 
 const initialState: AnalysisState = {};
@@ -39,7 +39,7 @@ function SubmitButton() {
 }
 
 export function ApkAnalyzer() {
-  const [state, formAction] = useFormState(handleApkAnalysis, initialState);
+  const [state, formAction] = useActionState(handleApkAnalysis, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
