@@ -17,7 +17,9 @@ import { useEffect, useRef, useActionState } from 'react';
 import { useFormStatus } from "react-dom";
 import { AnalysisResult } from './analysis-result';
 
-const initialState: AnalysisState = {};
+const initialState: AnalysisState = {
+  status: 'idle',
+};
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -44,8 +46,6 @@ export function ApkAnalyzer() {
   const formRef = useRef<HTMLFormElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const previousStatus = useRef(state.status);
-
   useEffect(() => {
     if (state.status === 'error' && state.message) {
       toast({
@@ -55,10 +55,9 @@ export function ApkAnalyzer() {
       });
     }
     // When a result is returned, scroll to it
-    if (state.status && state.status !== previousStatus.current) {
+    if (state.status !== 'idle' && state.status !== 'error') {
       resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    previousStatus.current = state.status;
   }, [state, toast]);
 
   return (

@@ -16,7 +16,7 @@ const formSchema = z.object({
 });
 
 export interface AnalysisState {
-  status?: 'genuine' | 'fake' | 'error';
+  status?: 'genuine' | 'fake' | 'error' | 'idle';
   message?: string;
   analysis?: string;
   expected?: string;

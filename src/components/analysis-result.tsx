@@ -45,7 +45,7 @@ export function AnalysisResult({ state }: { state: AnalysisState }) {
   const isFake = state.status === 'fake';
   const isError = state.status === 'error';
 
-  if (!state.status) return null;
+  if (state.status === 'idle') return null;
 
   if (isError) {
     return (
