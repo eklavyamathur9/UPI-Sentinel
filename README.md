@@ -16,7 +16,9 @@
 
 ## 📸 Screenshots
 
-*(Optional – add screenshots/gifs of the app interface here)*
+<img width="1066" height="742" alt="img1" src="https://github.com/user-attachments/assets/c91a3c2e-478b-4e45-8c13-f0dd0d4fad0c" />
+<img width="1037" height="625" alt="img2" src="https://github.com/user-attachments/assets/c840b493-e358-41ec-a398-36ef55cf8a03" />
+
 
 ---
 
